@@ -1,7 +1,8 @@
 import random, os, datetime, pickle, json, keras, sys
 import pandas as pd
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 OUTPUT_FLD = os.path.join('..','results')
 PRICE_FLD = '/Users/xianggao/Dropbox/distributed/code_db/price coinbase/vm-w7r-db'

@@ -17,7 +17,7 @@ def find_ideal(p, just_once):
 		return best
 
 
-class Market:
+class KSPMarket:
 	"""
 	state 			MA of prices, normalized using values at t
 					ndarray of shape (window_state, n_instruments * n_MA), i.e., 2D
@@ -63,6 +63,12 @@ class Market:
 
 
 	def get_noncash_reward(self, t=None, empty=None):
+		"""
+
+		:param t:
+		:param empty:
+		:return:
+		"""
 		if t is None:
 			t = self.t
 		if empty is None:
@@ -76,8 +82,15 @@ class Market:
 
 
 	def step(self, action):
+		"""
 
+		:param action:
+		:return:
+		"""
 		done = False
+		'''
+		close之后，账户中只有cash，这时候的reward为0.
+		'''
 		if action == 0:		# wait/close
 			reward = 0.
 			self.empty = True
@@ -106,6 +119,10 @@ class Market:
 		self.n_action = 3
 		self.state_shape = (window_state, self.sampler.n_var)
 		self.action_labels = ['empty','open','keep']
+
+		#当前time step
+		self.t = 0
+		#最后一个time step
 		self.t0 = window_state - 1
 
 

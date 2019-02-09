@@ -1,9 +1,9 @@
 #!/usr/bin/env python2
-
+from ksp_sampler import KSPSampler
 from lib import *
 from sampler import *
 from agents import *
-from emulator import *
+from ksp_emulator import *
 from simulators import *
 from visualizer import *
 
@@ -74,12 +74,13 @@ def main():
 	model_type = 'conv'; exploration_init = 1.; fld_load = None
 	# n_episode_training = 1000
 	# n_episode_testing = 100
-	n_episode_training = 100
-	n_episode_testing = 10
+	n_episode_training = 10
+	n_episode_testing = 2
 
 	open_cost = 3.3
-	db_type = 'SinSamplerDB'; db = 'concat_half_base_'; Sampler = SinSampler
+	# db_type = 'SinSamplerDB'; db = 'concat_half_base_'; Sampler = SinSampler
 	# db_type = 'PairSamplerDB'; db = 'randjump_100,1(10, 30)[]_'; Sampler = PairSampler
+	db_type = 'KSPSamplerDB';	db = 'concat_half_base_';	Sampler = KSPSampler
 	batch_size = 8
 	learning_rate = 1e-4
 	discount_factor = 0.8
@@ -87,9 +88,10 @@ def main():
 	exploration_min = 0.01
 	window_state = 40
 
-	fld = os.path.join('..','data',db_type,db+'A')
+	# fld = os.path.join('..','data',db_type,db+'A')
+	fld = os.path.join('data', db_type, db + 'B')
 	sampler = Sampler('load', fld=fld)
-	env = Market(sampler, window_state, open_cost)
+	env = KSPMarket(sampler, window_state, open_cost)
 	model, print_t = get_model(model_type, env, learning_rate, fld_load)
 	model.model.summary()
 	#return

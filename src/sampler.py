@@ -28,10 +28,19 @@ class Sampler:
 
 
 	def build_db(self, n_episodes, fld):
+		"""
+		db最后的结构是一个数组，每一个元素是一个数据序列+表示该序列数据特征的字符串
+		:param n_episodes:
+		:param fld:
+		:return:
+		"""
 		db = []
 		for i in range(n_episodes):
 			prices, title = self.sample()
 			db.append((prices, '[%i]_'%i+title))
+
+		print(db)
+
 		os.makedirs(fld)	# don't overwrite existing fld
 		pickle.dump(db, open(os.path.join(fld, 'db.pickle'),'wb'))
 		param = {'n_episodes':n_episodes}
@@ -41,6 +50,10 @@ class Sampler:
 
 
 	def __sample_db(self):
+		"""
+		将第i_db个db中的元组（price,title）分割为单纯的数值序列prices和title
+		:return:
+		"""
 		prices, title = self.db[self.i_db]
 		self.i_db += 1
 		if self.i_db == self.n_db:
@@ -176,6 +189,14 @@ class SinSampler(Sampler):
 
 	def __rand_sin(self, 
 		period_range=None, amplitude_range=None, noise_amplitude_ratio=None, full_episode=False):
+		"""
+
+		:param period_range:
+		:param amplitude_range:
+		:param noise_amplitude_ratio:
+		:param full_episode:
+		:return: 数量不定的一个数据序列[]
+		"""
 
 		if period_range is None:
 			period_range = self.period_range
@@ -198,7 +219,8 @@ class SinSampler(Sampler):
 
 		p = 100. + amplitude * np.sin(np.array(range(length)) * 2 * 3.1416 / period)
 		p += np.random.random(p.shape) * noise
-
+		print(type(p))
+		print(p)
 		return p, '100+%isin((2pi/%i)t)+%ie'%(amplitude, period, noise)
 
 
@@ -215,6 +237,11 @@ class SinSampler(Sampler):
 		return np.array(prices).T, 'concat sin'
 
 	def __sample_concat_sin_w_base(self):
+		"""
+		生成一组window_episode长的数值序列prices+title，一共需要n_episodes组
+		prices就是正常的价格，title可以是序列区间的时间
+		:return:
+		"""
 		prices = []
 		p = []
 		while True:
@@ -241,7 +268,7 @@ class SinSampler(Sampler):
 
 
 
-def test_SinSampler():
+def t_SinSampler():
 
 	window_episode = 180
 	window_state = 40
@@ -264,7 +291,7 @@ def test_SinSampler():
 
 
 
-def test_PairSampler():
+def t_PairSampler():
 	fhr = (10,30)
 	n_section = 1
 	max_change_perc = 30.
@@ -288,7 +315,7 @@ def test_PairSampler():
 
 if __name__ == '__main__':
 	#scan_match()
-	test_SinSampler()
+	t_SinSampler()
 	#p = [1,2,3,2,1,2,3]
 	#print find_ideal(p)
-	test_PairSampler()
+	# t_PairSampler()
